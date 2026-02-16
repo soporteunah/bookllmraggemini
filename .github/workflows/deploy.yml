@@ -20,17 +20,18 @@ jobs:
         python-version: 3.11
 
     - name: Install dependencies
-      run: |
-        pip install jupyter-book
+      run: pip install jupyter-book
 
-    # --- CAMBIO IMPORTANTE AQUÍ ---
-    # Entramos a la carpeta (cd libro) y construimos ahí mismo (.)
-    - name: Build the book
+    - name: Configure and Build
       run: |
-        cd libro
-        jupyter-book build .
+        # ESTO ARREGLA EL PROBLEMA:
+        # Creamos el archivo de configuración al vuelo para que NO ejecute el código
+        echo "execute:" > libro/_config.yml
+        echo "  execute_notebooks: 'off'" >> libro/_config.yml
+        
+        # Construimos apuntando a la carpeta
+        jupyter-book build libro
 
-    # Subimos el resultado que se generó dentro de la carpeta
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       with:
